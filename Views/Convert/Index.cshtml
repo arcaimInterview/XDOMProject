@@ -1,0 +1,19 @@
+﻿@model XDOMProject.Models.TextBox
+
+@{
+    ViewData["Title"] = "Text convertion";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        @Html.EditorFor(m => m.Text)
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Convert to XML" formaction="Convert/XmlConvert" />
+        <input type="submit" value="Convert to CSV" formaction="Convert/CsvConvert" />
+    </div>
+</form>
+
