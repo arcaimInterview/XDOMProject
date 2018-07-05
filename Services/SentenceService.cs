@@ -20,6 +20,9 @@ namespace XDOMProject.Services
 
         public void Load(TextBox textBox)
         {
+            if (string.IsNullOrWhiteSpace(textBox.Text))
+                return;
+
             var sentences = textBox.Text.Split(".");
 
             foreach(var sen in sentences.Where(x => !string.IsNullOrWhiteSpace(x)))
