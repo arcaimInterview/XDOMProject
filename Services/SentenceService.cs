@@ -24,7 +24,9 @@ namespace XDOMProject.Services
 
             foreach(var sen in sentences.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
-                _sentenceRepository.Add(Sentence.Create(sen));
+                var words = MakeWords(sen);
+                if (!string.IsNullOrWhiteSpace(words.FirstOrDefault()))
+                    _sentenceRepository.Add(Sentence.Create(sen, words));
             }
         }
 
@@ -41,5 +43,13 @@ namespace XDOMProject.Services
             foreach (var sen in sentences)
                 sen.Words = sen.Words.OrderByDescending(x => x);
         }
+
+        private IEnumerable<string> MakeWords(string rawSentence)
+            => rawSentence.Replace("\n", " ")
+                          .Replace("\r", " ")
+                          .Replace(",","")
+                          .Trim()
+                          .Split(" ")
+                          .Where(x => !string.IsNullOrWhiteSpace(x));
     }
 }

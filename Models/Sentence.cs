@@ -6,7 +6,6 @@ namespace XDOMProject.Models
 {
     public class Sentence
     {
-        public Guid Id { get; set; }
         public string RawSentence { get; set; }
         public IEnumerable<string> Words { get; set; }
 
@@ -14,21 +13,13 @@ namespace XDOMProject.Models
         {
         }
 
-        public Sentence(string rawSentence)
+        private Sentence(string rawSentence, IEnumerable<string> words)
         {
-            Id = Guid.NewGuid();
             RawSentence = rawSentence;
-            Words = MakeWords(rawSentence);
+            Words = words;
         }
 
-        public static Sentence Create(string rawSentence)
-            => new Sentence(rawSentence);
-
-        private IEnumerable<string> MakeWords(string rawSentence)
-            => rawSentence.Replace("\n", " ")
-                          .Replace(",","")
-                          .Trim()
-                          .Split(" ")
-                          .Where(x => !string.IsNullOrWhiteSpace(x));
+        public static Sentence Create(string rawSentence, IEnumerable<string> words)
+            => new Sentence(rawSentence, words);
     }
 }
