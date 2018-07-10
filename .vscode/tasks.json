@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/XDOMProject.csproj"
+                "${workspaceFolder}/WordAnalyzer.Api/WordAnalyzer.Api.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
