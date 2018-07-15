@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WordAnalyzer.Core.Domain;
+using WordAnalyzer.Core.Repositories;
+using WordAnalyzer.Infrastructure.Sorts;
 
-namespace WordAnalyzer.Infrastructure.ConversionMethods
+namespace WordAnalyzer.Infrastructure.Converters
 {
-    public static class ConvertToCsv // usunąć statiki ze względu na wycieki pamięci
+    public class CsvConverter : Converter
     {
-        public static string Go(IEnumerable<Sentence> sentences)
+        protected override string CreateStructure(IEnumerable<Sentence> sentences)
         {
             var max = sentences.Select(sen => new 
                                     { WordsNumber = sen.Words.Count() })

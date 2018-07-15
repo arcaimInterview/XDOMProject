@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using WordAnalyzer.Core.Domain;
 using WordAnalyzer.Core.Repositories;
+using WordAnalyzer.Infrastructure.Commands;
+using WordAnalyzer.Infrastructure.Converters;
+using WordAnalyzer.Infrastructure.Sorts;
 
 namespace WordAnalyzer.Infrastructure.Services
 {
@@ -14,44 +17,24 @@ namespace WordAnalyzer.Infrastructure.Services
             _sentenceRepository = sentenceRepository;
         }
 
-        public IEnumerable<Sentence> GetAll()
-            => _sentenceRepository.GetAll();
-
-        public void Load(TextBox textBox)
+        public string Convert(Converter converter)
         {
-            if (string.IsNullOrWhiteSpace(textBox.Text))
-                return;
-
-            var sentences = textBox.Text.Split('.');
-
-            foreach(var sen in sentences.Where(x => !string.IsNullOrWhiteSpace(x)))
-            {
-                var words = MakeWords(sen);
-                if (!string.IsNullOrWhiteSpace(words.FirstOrDefault()))
-                    _sentenceRepository.Add(Sentence.Create(sen, words));
-            }
+            converter.LoadSentences(_sentenceRepository.GetAll());
+            return converter.ConvertToStructure();
         }
 
-        public void SortAsc()
+        public bool Load(string text)
         {
-            var sentences = _sentenceRepository.GetAll();
-            foreach (var sen in sentences)
-                sen.Words = sen.Words.OrderBy(x => x);
+            var creator = new SentencesCreator(text);
+            var isCorrect = creator.Create();
+            _sentenceRepository.Clear();
+            creator.Sentences
+                   .ForEach(x => _sentenceRepository.Add(x));
+            
+            return isCorrect;
         }
 
-        public void SortDesc()
-        {
-            var sentences = _sentenceRepository.GetAll();
-            foreach (var sen in sentences)
-                sen.Words = sen.Words.OrderByDescending(x => x);
-        }
-
-        private IEnumerable<string> MakeWords(string rawSentence)
-            => rawSentence.Replace("\n", " ")
-                          .Replace("\r", " ")
-                          .Replace(",","")
-                          .Trim()
-                          .Split(' ')
-                          .Where(x => !string.IsNullOrWhiteSpace(x));
+        public void Sort(ISort sort)
+            => sort.Run(_sentenceRepository.GetAll());
     }
 }

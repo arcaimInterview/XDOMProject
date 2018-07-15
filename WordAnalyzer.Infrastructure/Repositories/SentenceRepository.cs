@@ -11,6 +11,9 @@ namespace WordAnalyzer.Infrastructure.Repositories
         public void Add(Sentence sentence)
             => _sentences.Add(sentence);
 
+        public void Clear()
+            => _sentences.Clear();
+
         public IEnumerable<Sentence> GetAll()
             => _sentences;
     }

@@ -22,7 +22,7 @@ namespace WordAnalyzer.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddScoped<ISentenceRepository, SentenceRepository>();
+            services.AddSingleton<ISentenceRepository, SentenceRepository>();
             services.AddScoped<ISentenceService, SentenceService>();
         }
 
@@ -43,7 +43,7 @@ namespace WordAnalyzer.Api
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Convert}/{action=Index}");
+                    template: "{controller=Converts}/{action=Index}");
             });
         }
     }
