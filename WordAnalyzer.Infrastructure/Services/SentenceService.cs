@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using WordAnalyzer.Core.Domain;
 using WordAnalyzer.Core.Repositories;
 using WordAnalyzer.Infrastructure.Commands;
@@ -11,30 +12,34 @@ namespace WordAnalyzer.Infrastructure.Services
     public class SentenceService : ISentenceService
     {
         ISentenceRepository _sentenceRepository;
+        ISentenceCreator _sentenceCreator;
 
-        public SentenceService(ISentenceRepository sentenceRepository)
+        public SentenceService(ISentenceRepository sentenceRepository, ISentenceCreator sentenceCreator)
         {
             _sentenceRepository = sentenceRepository;
+            _sentenceCreator = sentenceCreator;
         }
 
-        public string Convert(Converter converter)
+        public async Task<string> ConvertAsync(Converter converter)
         {
-            converter.LoadSentences(_sentenceRepository.GetAll());
-            return converter.ConvertToStructure();
+            await converter.LoadSentencesAsync(await _sentenceRepository.GetAllAsync());
+            return await converter.ConvertToStructureAsync();
         }
 
-        public bool Load(string text)
+        public async Task<bool> LoadAsync(string text)
         {
-            var creator = new SentencesCreator(text);
-            var isCorrect = creator.Create();
-            _sentenceRepository.Clear();
-            creator.Sentences
-                   .ForEach(x => _sentenceRepository.Add(x));
+            await _sentenceCreator.CreateAsync(text);
+            var sentences = await _sentenceCreator.GetAsync();
+            await _sentenceRepository.ClearAsync();
+
+            sentences.ToList()
+                     .ForEach(x => _sentenceRepository
+                     .AddAsync(x));
             
-            return isCorrect;
+            return await _sentenceRepository.AnyAsync();
         }
 
-        public void Sort(ISort sort)
-            => sort.Run(_sentenceRepository.GetAll());
+        public async Task SortAsync(ISort sort)
+            => await sort.RunAsync(await _sentenceRepository.GetAllAsync());
     }
 }

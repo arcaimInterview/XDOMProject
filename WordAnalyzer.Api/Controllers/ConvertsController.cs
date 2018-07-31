@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WordAnalyzer.Infrastructure.Commands;
 using WordAnalyzer.Infrastructure.Converters;
@@ -20,24 +21,22 @@ namespace WordAnalyzer.Api.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Load([FromForm] LoadText command)
-            => _sentenceService.Load(command.Text)
+        [HttpPost()]
+        public async Task<IActionResult> Load([FromBody] LoadText command)
+            => await _sentenceService.LoadAsync(command.Text)
                ? StatusCode(201)
                : StatusCode(204);
 
-        public string ConvertToXml()
+        public async Task<string> ConvertToXml()
         {
-            _sentenceService.Sort(new SortAsc());
-            return _sentenceService.Convert(new XmlConverter());
-            // return xml;
+            await _sentenceService.SortAsync(new SortAsc());
+            return await _sentenceService.ConvertAsync(new XmlConverter());
         }
 
-        public string ConvertToCsv()
+        public async Task<string> ConvertToCsv()
         {
-            _sentenceService.Sort(new SortAsc());
-            var csv = _sentenceService.Convert(new CsvConverter());
-            return csv;
+            await _sentenceService.SortAsync(new SortAsc());
+            return await _sentenceService.ConvertAsync(new CsvConverter());
         }
     }
         

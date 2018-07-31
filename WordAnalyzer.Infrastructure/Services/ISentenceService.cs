@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using WordAnalyzer.Core.Domain;
 using WordAnalyzer.Infrastructure.Commands;
 using WordAnalyzer.Infrastructure.Converters;
@@ -8,9 +9,9 @@ namespace WordAnalyzer.Infrastructure.Services
 {
     public interface ISentenceService
     {
-        string Convert(Converter converter);
-        bool Load(string text);
+        Task<string> ConvertAsync(Converter converter);
+        Task<bool> LoadAsync(string text);
         
-        void Sort(ISort sort);
+        Task SortAsync(ISort sort);
     }
 }

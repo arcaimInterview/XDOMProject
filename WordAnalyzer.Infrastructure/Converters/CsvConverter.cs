@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using WordAnalyzer.Core.Domain;
 using WordAnalyzer.Core.Repositories;
 using WordAnalyzer.Infrastructure.Sorts;
@@ -9,7 +10,7 @@ namespace WordAnalyzer.Infrastructure.Converters
 {
     public class CsvConverter : Converter
     {
-        protected override string CreateStructure(IEnumerable<Sentence> sentences)
+        protected override async Task<string> CreateStructureAsync(IEnumerable<Sentence> sentences)
         {
             var max = sentences.Select(sen => new 
                                     { WordsNumber = sen.Words.Count() })
@@ -28,7 +29,7 @@ namespace WordAnalyzer.Infrastructure.Converters
                 csv.AppendLine($"Sentence {j++}, " + string.Join(", ", sen.Words));
             }
 
-            return csv.ToString();
+            return await Task.FromResult(csv.ToString().TrimEnd());
         }
     }
 }

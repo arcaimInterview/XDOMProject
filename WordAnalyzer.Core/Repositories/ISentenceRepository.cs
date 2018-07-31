@@ -1,12 +1,14 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using WordAnalyzer.Core.Domain;
 
 namespace WordAnalyzer.Core.Repositories
 {
     public interface ISentenceRepository
     {
-        void Add(Sentence sentence);
-        void Clear();
-        IEnumerable<Sentence> GetAll();
+        Task AddAsync(Sentence sentence);
+        Task<bool> AnyAsync();
+        Task ClearAsync();
+        Task<IEnumerable<Sentence>> GetAllAsync();
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using WordAnalyzer.Core.Domain;
 using WordAnalyzer.Core.Repositories;
@@ -10,7 +11,7 @@ namespace WordAnalyzer.Infrastructure.Converters
 {
     public class XmlConverter : Converter
     {
-        protected override string CreateStructure(IEnumerable<Sentence> sentences)
+        protected override async Task<string> CreateStructureAsync(IEnumerable<Sentence> sentences)
         {
             var doc = new XDocument(
                 new XDeclaration(version: "1.0", encoding: "utf-8", standalone: "yes"),
@@ -22,7 +23,7 @@ namespace WordAnalyzer.Infrastructure.Converters
                         )));
             var xml = new StringWriter();
             doc.Save(xml);
-            return xml.ToString();
+            return await Task.FromResult(xml.ToString());
         }
     }
 }
