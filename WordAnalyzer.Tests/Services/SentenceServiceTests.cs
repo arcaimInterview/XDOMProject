@@ -80,16 +80,6 @@ namespace WordAnalyzer.Tests.Services
             sentenceRepositoryMock.Verify(x => x.AnyAsync(), Times.Once);
         }
 
-        // [Fact]
-        // public async Task convert_async_should_invoke_load_sentences_async_method()
-        // {
-        //     var sentenceService = await GetSentenceSeviceAsync();
-        //     var converterMock = new Mock<Converter>();
-        //     await sentenceService.ConvertAsync(converterMock.Object);
-
-        //     converterMock.Verify(x => x.LoadSentencesAsync(It.IsAny<IEnumerable<Sentence>>()), Times.Once);
-        // }
-
         [Fact]
         public async Task load_async_method_should_add_async_sentence_to_sentence_repository()
         {
@@ -135,12 +125,6 @@ namespace WordAnalyzer.Tests.Services
 
             Assert.Equal(expected, actual);
         }
-
-
-
-        
-
-        
 
         [Fact]
         public async Task convert_and_sort_sentences_to_xml()
